@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class MemoController {
@@ -24,4 +26,10 @@ public class MemoController {
     public Memo createMemo(@RequestBody MemoRequestDto requestDto) {
         return memoService.createMemo(requestDto);
     }
+    @GetMapping("/api/memos")
+    public List<Memo> getMemos() {
+        return memoService.getMemos();
+    }
+
+
 }
