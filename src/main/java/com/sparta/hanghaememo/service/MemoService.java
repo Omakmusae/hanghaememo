@@ -34,5 +34,11 @@ public class MemoService {
         memo.update(requestDto);
         return memo.getId();
     }
+
+    @Transactional
+    public Long deleteMemo(Long id) {
+        memoRepository.deleteById(id);
+        return id;
+    }
 }
 
