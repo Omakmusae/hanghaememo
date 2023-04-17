@@ -14,10 +14,16 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private String author;
 
     @Column(nullable = false)
-    private String contents;
+    private String content;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String password;
 
 //    public Memo(String username, String contents) {
 //        this.username = username;
@@ -25,12 +31,17 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
 //    }
 
     public Memo(MemoRequestDto requestDto) {
-        this.username = requestDto.getUsername();
-        this.contents = requestDto.getContents();
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.author = requestDto.getAuthor();
+        this.password = requestDto.getPassword();
     }
+
+
+
     public void update(MemoRequestDto memoRequestDto) {
-        this.username = memoRequestDto.getUsername();
-        this.contents = memoRequestDto.getContents();
+        this.author = memoRequestDto.getAuthor();
+        this.content = memoRequestDto.getContent();
     }
 
 

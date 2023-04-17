@@ -2,6 +2,7 @@ package com.sparta.hanghaememo.controller;
 
 
 import com.sparta.hanghaememo.dto.MemoRequestDto;
+import com.sparta.hanghaememo.dto.MemoResponseDto;
 import com.sparta.hanghaememo.entity.Memo;
 import com.sparta.hanghaememo.service.MemoService;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +20,23 @@ public class MemoController {
     public ModelAndView home() {
         return new ModelAndView("index"); //ModelAndView 객체에 index html을 반환
     }
-    @PostMapping("/api/memos") // post 방식은 body에 넣어서 데이터를 전송해야함
-    public Memo createMemo(@RequestBody MemoRequestDto requestDto) {
+
+    //CRUD
+    @PostMapping("/api/post") // post 방식은 body에 넣어서 데이터를 전송해야함
+    public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto) {
         return memoService.createMemo(requestDto);
     }
-    @GetMapping("/api/memos")
-    public List<Memo> getMemos() {
+
+    @GetMapping("/api/posts") // 전체 메모 조회
+    public List<Memo> Memos() {
         return memoService.getMemos();
     }
+
+
+
+
+
+
     @PutMapping("/api/memos/{id}")
     public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
         System.out.println("수정");
@@ -37,6 +47,4 @@ public class MemoController {
     public Long deleteMemo(@PathVariable Long id) {
         return memoService.deleteMemo(id);
     }
-
-
 }

@@ -13,7 +13,7 @@
       getMessages();
     })
 
-    // 메모를 불러와서 보여줍니다.
+    // 전체 메모를 불러와서 보여줍니다.
     function getMessages() {
       // 1. 기존 메모 내용을 지웁니다.
       $('#cards-box').empty();
@@ -21,28 +21,56 @@
       // 2. 메모 목록을 불러와서 HTML로 붙입니다.
       $.ajax({
         type: "GET",
-        url: "/api/memos",
+        url: "/api/posts",
         data: {},
         success: function (response) {
           for (let i = 0; i < response.length; i++) {
             let message = response[i];
             let id = message['id'];
-            let username = message['username'];
-            let contents = message['contents'];
+            let author = message['author'];
+            let content = message['content'];
             let modifiedAt = message['modifiedAt'];
+            let title = message['title'];
+            addHTML(id, author, content, modifiedAt, title);
+          }
+        }
+      });
+    }
+
+    // 선택 메모를 불러와서 보여줍니다.
+    function selectMessages() {
+      // 1. 기존 메모 내용을 지웁니다.
+      $('#cards-box').empty();
+
+      // 2. 선핵한 메모를 불러와서 HTML로 붙입니다.
+      $.ajax({
+        type: "GET",
+        url: `/api/post/${id}`,
+        data: {},
+        success: function (response) {
+          for (let i = 0; i < response.length; i++) {
+            let message = response[i];
+            let id = message['id'];
+            let author = message['author'];
+            let content = message['content'];
+            let modifiedAt = message['modifiedAt'];
+            let title = message['title'];
             addHTML(id, username, contents, modifiedAt);
           }
         }
       });
     }
 
+
+
+
     // 메모 하나를 HTML로 만들어서 body 태그 내 원하는 곳에 붙입니다.
-    function addHTML(id, username, contents, modifiedAt) {
-      let tempHtml = makeMessage(id, username, contents, modifiedAt);
+    function addHTML(id, author, content, modifiedAt, title) {
+      let tempHtml = makeMessage(id, author, content, modifiedAt, title);
       $('#cards-box').append(tempHtml);
     }
 
-    function makeMessage(id, username, contents, modifiedAt) {
+    function makeMessage(id, username, contents, modifiedAt, title) {
       return `<div class="card">
                         <!-- date/username 영역 -->
                         <div class="metadata">
@@ -51,6 +79,9 @@
                             </div>
                             <div id="${id}-username" class="username">
                                 ${username}
+                            </div>
+                            <div id="${id}-title" class="title">
+                                ${title}
                             </div>
                         </div>
                         <!-- contents 조회/수정 영역-->
@@ -100,26 +131,32 @@
     // 메모를 생성합니다.
     function writePost() {
       // 1. 작성한 메모를 불러옵니다.
-      let contents = $('#contents').val();
+      let content = $('#contents').val();
+      let title = $('#title').val();
+      let author = $('#name').val();
+      let password = $('#pwd').val();
+
+
 
       // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
-      if (isValidContents(contents) == false) {
+      if (isValidContents(content) == false) {
         return;
       }
 
-      // 3. genRandomName 함수를 통해 익명의 username을 만듭니다.
-      let username = genRandomName(10);
+
 
       // 4. 전달할 data JSON으로 만듭니다.
-      let data = {'username': username, 'contents': contents};
+      let data = {'author': author, 'content': content, 'title':title,'password':password};
+      console.log(data);
 
       $.ajax({
         type: "POST",
-        url: "/api/memos",
+        url: "/api/post",
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {
           alert('메시지가 성공적으로 작성되었습니다.');
+              console.log(response)
           window.location.reload();
         }
       });
@@ -379,28 +416,34 @@
 </head>
 
 <body>
-<div class="background-header">
-
-</div>
-<div class="background-body">
-
-</div>
-<div class="wrap">
-  <div class="header">
-    <h2>Timeline Service</h2>
-    <p>
-      공유하고 싶은 소식을 입력하세요.
-    </p>
-  </div>
-  <div class="area-write">
-        <textarea class="field" placeholder="공유하고 싶은 소식을 입력하세요." name="contents" th:id="contents" cols="30"
-                  rows="10"></textarea>
-    <img src="/images/send.png" alt="" onclick="writePost()">
-  </div>
-  <div id="cards-box" class="area-read">
+  <div class="background-header">
 
   </div>
-</div>
+  <div class="background-body">
+
+  </div>
+  <div class="wrap">
+    <div class="header">
+      <h2>Timeline Service</h2>
+      <p>
+        공유하고 싶은 소식을 입력하세요.
+      </p>
+    </div>
+
+    <div class="area-write">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요" />
+        <input type="text" class="form-control" id="name" placeholder="닉네임을 입력하세요" />
+        <input type="password" class="form-control" id="pwd" placeholder="비밀번호를 입력하세요" />
+      </div>
+          <textarea class="field" placeholder="공유하고 싶은 소식을 입력하세요." name="contents" th:id="contents" cols="30"
+                    rows="10"></textarea>
+      <img src="/images/send.png" alt="" onclick="writePost()">
+    </div>
+    <div id="cards-box" class="area-read">
+
+    </div>
+  </div>
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 package com.sparta.hanghaememo.service;
 
 import com.sparta.hanghaememo.dto.MemoRequestDto;
+import com.sparta.hanghaememo.dto.MemoResponseDto;
 import com.sparta.hanghaememo.entity.Memo;
 import com.sparta.hanghaememo.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +17,17 @@ public class MemoService {
     private final MemoRepository memoRepository; // service와 db를 연결
 
     @Transactional//
-    public Memo createMemo(MemoRequestDto requestDto) {
+    public MemoResponseDto createMemo(MemoRequestDto requestDto) {
         Memo memo = new Memo(requestDto); // 메모 클래스를 인스턴스로 만들어서 사용하려면 Memo 부분에 생성자를 추가해줘야함
         memoRepository.save(memo);
-        return memo;
+        return new MemoResponseDto(memo.getTitle(), memo.getContent(), memo.getAuthor());
     }
 
     @Transactional(readOnly = true)//읽기 옵션 추가
     public List<Memo> getMemos() {
         return memoRepository.findAllByOrderByModifiedAtDesc();
     }
+
     @Transactional
     public Long update(Long id, MemoRequestDto requestDto) {
         Memo memo = memoRepository.findById(id).orElseThrow(
