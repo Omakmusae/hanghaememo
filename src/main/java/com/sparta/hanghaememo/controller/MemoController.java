@@ -5,10 +5,7 @@ import com.sparta.hanghaememo.dto.MemoRequestDto;
 import com.sparta.hanghaememo.entity.Memo;
 import com.sparta.hanghaememo.service.MemoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -29,6 +26,11 @@ public class MemoController {
     @GetMapping("/api/memos")
     public List<Memo> getMemos() {
         return memoService.getMemos();
+    }
+    @PutMapping("/api/memos/{id}")
+    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
+        System.out.println("수정");
+        return memoService.update(id, requestDto);
     }
 
 

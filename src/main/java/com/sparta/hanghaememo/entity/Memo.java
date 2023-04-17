@@ -23,6 +23,12 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
         this.username = requestDto.getUsername();
         this.contents = requestDto.getContents();
     }
+    public void update(MemoRequestDto memoRequestDto) {
+        this.username = memoRequestDto.getUsername();
+        this.contents = memoRequestDto.getContents();
+    }
+
+
 
 }
 
