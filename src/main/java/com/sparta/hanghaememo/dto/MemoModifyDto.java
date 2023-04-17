@@ -5,20 +5,16 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class MemoResponseDto {
-    private Long id;
+public class MemoModifyDto {
     private String title;
-    private String content;
     private String author;
-    private LocalDateTime createdAt;
+    private String content;
     private LocalDateTime modifiedAt;
 
-    public MemoResponseDto(Memo memo) {
-        this.id = memo.getId();
+    public MemoModifyDto(Memo memo) {
         this.title = memo.getTitle();
         this.content = memo.getContent();
         this.author = memo.getAuthor();
-        this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();
     }
 }

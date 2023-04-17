@@ -1,18 +1,22 @@
 package com.sparta.hanghaememo.controller;
 
 
-import com.sparta.hanghaememo.dto.MemoRequestDto;
+import com.sparta.hanghaememo.dto.DeleteRequestDto;
+import com.sparta.hanghaememo.dto.MemoModifyDto;
 import com.sparta.hanghaememo.dto.MemoResponseDto;
-import com.sparta.hanghaememo.entity.Memo;
+import com.sparta.hanghaememo.dto.MemoRequestDto;
+
 import com.sparta.hanghaememo.service.MemoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MemoController {
     private final MemoService memoService; //controller와 서비스 연결
 
@@ -22,29 +26,34 @@ public class MemoController {
     }
 
     //CRUD
-    @PostMapping("/api/post") // post 방식은 body에 넣어서 데이터를 전송해야함
+    @PostMapping("/post") // post 방식은 body에 넣어서 데이터를 전송해야함
     public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto) {
         return memoService.createMemo(requestDto);
     }
 
-    @GetMapping("/api/posts") // 전체 메모 조회
-    public List<Memo> Memos() {
+    @GetMapping("/posts") // 전체 메모 조회
+    public List<MemoResponseDto> Memos() {
         return memoService.getMemos();
     }
 
+    @GetMapping("/post/{id}") // 선택 메모 조회
+    public MemoResponseDto selectMemo(@PathVariable Long id) {
+        return memoService.selectMemo(id);
+    }
 
 
 
-
-
-    @PutMapping("/api/memos/{id}")
-    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
+    @PutMapping("/post/{id}")
+    public MemoModifyDto updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto) throws Exception{
         System.out.println("수정");
-        return memoService.update(id, requestDto);
+        return memoService.update(id, memoRequestDto);
     }
 
-    @DeleteMapping("/api/memos/{id}")
-    public Long deleteMemo(@PathVariable Long id) {
-        return memoService.deleteMemo(id);
+    @DeleteMapping("/post/{id}")
+    public Map<String, Boolean> deleteMemo(@PathVariable Long id, @RequestBody DeleteRequestDto requestDto) throws Exception{
+        return memoService.deleteMemo(id, requestDto);
     }
+
+
+
 }

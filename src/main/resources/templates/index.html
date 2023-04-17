@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -143,10 +144,8 @@
         return;
       }
 
-
-
       // 4. 전달할 data JSON으로 만듭니다.
-      let data = {'author': author, 'content': content, 'title':title,'password':password};
+      let data = { 'author': author, 'content': content, 'title': title, 'password': password };
       console.log(data);
 
       $.ajax({
@@ -156,7 +155,7 @@
         data: JSON.stringify(data),
         success: function (response) {
           alert('메시지가 성공적으로 작성되었습니다.');
-              console.log(response)
+          console.log(response)
           window.location.reload();
         }
       });
@@ -179,10 +178,11 @@
       $(`#${id}-edit`).hide();
     }
     // 메모를 수정합니다.
-    function submitEdit(id) {
+    function submitEdit(password) {
       // 1. 작성 대상 메모의 username과 contents 를 확인합니다.
       let username = $(`#${id}-username`).text().trim();
       let contents = $(`#${id}-textarea`).val().trim();
+
 
       // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
       if (isValidContents(contents) == false) {
@@ -190,12 +190,12 @@
       }
 
       // 3. 전달할 data JSON으로 만듭니다.
-      let data = {'username': username, 'contents': contents};
+      let data = { 'username': username, 'contents': contents };
 
       // 4. PUT /api/memos/{id} 에 data를 전달합니다.
       $.ajax({
         type: "PUT",
-        url: `/api/memos/${id}`,
+        url: `/api/post/${id}`,
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {
@@ -207,7 +207,7 @@
     function deleteOne(id) {
       $.ajax({
         type: "DELETE",
-        url: `/api/memos/${id}`,
+        url: `/api/post/${id}`,
         success: function (response) {
           alert('메시지 삭제에 성공하였습니다.');
           window.location.reload();
@@ -348,9 +348,7 @@
       padding: 10px 23px;
     }
 
-    .card .metadata .date {
-
-    }
+    .card .metadata .date {}
 
     .card .metadata .username {
       margin-left: 20px;
@@ -416,34 +414,35 @@
 </head>
 
 <body>
-  <div class="background-header">
+<div class="background-header">
+
+</div>
+<div class="background-body">
+
+</div>
+<div class="wrap">
+  <div class="header">
+    <h2>Timeline Service</h2>
+    <p>
+      공유하고 싶은 소식을 입력하세요.
+    </p>
+  </div>
+  <div class="area-write">
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요" />
+      <input type="text" class="form-control" id="name" placeholder="닉네임을 입력하세요" />
+      <input type="password" class="form-control" id="pwd" placeholder="비밀번호를 입력하세요" />
+    </div>
+    <textarea class="field" placeholder="공유하고 싶은 소식을 입력하세요." name="contents" th:id="contents" cols="30"
+              rows="10"></textarea>
+    <img src="/images/send.png" alt="" onclick="writePost()">
 
   </div>
-  <div class="background-body">
+
+  <div id="cards-box" class="area-read">
 
   </div>
-  <div class="wrap">
-    <div class="header">
-      <h2>Timeline Service</h2>
-      <p>
-        공유하고 싶은 소식을 입력하세요.
-      </p>
-    </div>
-
-    <div class="area-write">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요" />
-        <input type="text" class="form-control" id="name" placeholder="닉네임을 입력하세요" />
-        <input type="password" class="form-control" id="pwd" placeholder="비밀번호를 입력하세요" />
-      </div>
-          <textarea class="field" placeholder="공유하고 싶은 소식을 입력하세요." name="contents" th:id="contents" cols="30"
-                    rows="10"></textarea>
-      <img src="/images/send.png" alt="" onclick="writePost()">
-    </div>
-    <div id="cards-box" class="area-read">
-
-    </div>
-  </div>
+</div>
 </body>
 
 </html>
