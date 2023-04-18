@@ -23,7 +23,7 @@
 2. JSON을 반환하는 API형태로 진행해주세요. (PostMan을 활용해 서버가 반환하는 결과값을 확인할 수 있습니다.)
 
 ## Use Case
-![image]<img width="293" alt="메모장_pjt_유스케이스_다이어그램" src="https://user-images.githubusercontent.com/106947027/232636416-e7aaa3d7-d051-440e-911a-3801d0b5bfa6.png">
+<img width="293" alt="메모장_pjt_유스케이스_다이어그램" src="https://user-images.githubusercontent.com/106947027/232636416-e7aaa3d7-d051-440e-911a-3801d0b5bfa6.png">
 
 ## API 명세서
 ![image](https://user-images.githubusercontent.com/97998858/232209293-27dd7f32-4398-4a4b-8fc9-a8b75e6ea07f.png)
