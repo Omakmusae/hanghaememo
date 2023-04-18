@@ -38,10 +38,6 @@ public class MemoService {
             MemoResponseDto memoResponseDto = new MemoResponseDto(list.get(i));
             response.add(memoResponseDto);
         }
-        // List<Memo>를 하나씩 빼서 List<MemoPostResponseDto>에 넣기
-        // builder 패턴 -> 이건 나중에 코드 리뷰 때
-        // memo에서
-        // MemoPostResponseDto 값 넣을 때 setter는 비추
         return response;
     }
 
@@ -50,10 +46,6 @@ public class MemoService {
         Memo memo = memoRepository.findById(id).get();
         MemoResponseDto memoResponseDto = new MemoResponseDto(memo);
         return memoResponseDto;
-        // List<MemoSelectResponseDto>
-        // List<Memo> id는?
-        // Optional 예외처리 다시 찾아보기
-        // 생성자 패턴 3가지
     }
 
 
@@ -74,20 +66,18 @@ public class MemoService {
     }
 
     @Transactional
-    public Map<String, Boolean> deleteMemo(Long id, DeleteRequestDto requestDto) {
+    public String deleteMemo(Long id, DeleteRequestDto requestDto) {
         Memo memo = memoRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
         if(memo.getPassword().equals(requestDto.getPassword())) {
             memoRepository.delete(memo);
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("success", true);
-            return response;
+//            Map<String, Boolean> response = new HashMap<>();
+//            response.put("success", true);
+            return "게시글을 삭제했습니다.";
         }
         else {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
-
-
 }

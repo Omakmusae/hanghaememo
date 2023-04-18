@@ -50,10 +50,9 @@ public class MemoController {
     }
 
     @DeleteMapping("/post/{id}")
-    public Map<String, Boolean> deleteMemo(@PathVariable Long id, @RequestBody DeleteRequestDto requestDto) throws Exception{
+    public String deleteMemo(@PathVariable Long id, @RequestBody DeleteRequestDto requestDto) throws Exception{
         return memoService.deleteMemo(id, requestDto);
     }
-
 
 
 }
