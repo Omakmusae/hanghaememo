@@ -22,6 +22,10 @@
 1. Entity를 그대로 반환하지 말고, DTO에 담아서 반환해주세요.
 2. JSON을 반환하는 API형태로 진행해주세요. (PostMan을 활용해 서버가 반환하는 결과값을 확인할 수 있습니다.)
 
+
+## 구현한 기능
+1. Lombok과 JPA를 이용하여 원하는 DB 사용
+2. Spring Boot 기반으로 CRUD 기능이 포함된 REST API 설계
 ## Use Case
 <img width="293" alt="메모장_pjt_유스케이스_다이어그램" src="https://user-images.githubusercontent.com/106947027/232636416-e7aaa3d7-d051-440e-911a-3801d0b5bfa6.png">
 
