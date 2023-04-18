@@ -22,34 +22,30 @@
 1. Entity를 그대로 반환하지 말고, DTO에 담아서 반환해주세요.
 2. JSON을 반환하는 API형태로 진행해주세요. (PostMan을 활용해 서버가 반환하는 결과값을 확인할 수 있습니다.)
 
+
+## 구현한 기능
+1. Lombok과 JPA를 이용하여 원하는 DB 사용
+2. Spring Boot 기반으로 CRUD 기능이 포함된 REST API 설계
 ## Use Case
-![image](https://user-images.githubusercontent.com/97998858/232207991-565b6cf5-0a87-4186-a83b-46f0230ffc8e.png)
+<img width="293" alt="메모장_pjt_유스케이스_다이어그램" src="https://user-images.githubusercontent.com/106947027/232636416-e7aaa3d7-d051-440e-911a-3801d0b5bfa6.png">
 
 ## API 명세서
 ![image](https://user-images.githubusercontent.com/97998858/232209293-27dd7f32-4398-4a4b-8fc9-a8b75e6ea07f.png)
 
-## Why
+## Why?
 1. 수정, 삭제 API의 request를 어떤 방식으로 사용하셨나요? (param, query, body)
-  -> @RequestBody를 사용했습니다. 클라이언트가 전송하는 JSON 형식의 HTTP Body 내용을 자바 객체로 변환해주기 때문입니다.
-  
+  - 수정, 삭제 기능은 pk인 id를 기반으로 Repo 메소드를 사용하였고, id값은 @PathVariable을 통해서 받고, 프런트에서 온 HTTP body 데이터(JSON)는 @RequestBody를 사용하여 JSON형태의 객체로 받고 반환함 
 2. 어떤 상황에 어떤 방식의 request를 써야하나요?
-  -> param은 url 뒤에 붙는 파라미터의 값을 가져올 때 사용하고, Body를 직접 조회하지 않습니다. 
-     원하는 조건의 데이터, 하나의 데이터를 받아올 때 적절합니다.
-  -> query는 url 물음표 뒤에 나오며 변수를 담고 있습니다. key=value로 이루어져 조건을 줘서 원하는 결과를 얻을 수 있습니다. 
-     검색, 필터링, sorting에 적절합니다.
-  -> PathVariable은 /{id}처럼 구분자에 들어오는 값을 처리할 때 사용합니다. 실습에서는 id를 받아올 때 사용했습니다.
-  -> body는 url에 보이지 않고, XML, JSON, Multi Form 등의 데이터를 가져옵니다.
-     body에 담은 값을 변환하기 때문에, GET이 아닌 POST 방식에서만 사용이 가능합니다.
-     (GET 방식은 Header에 값을 담아 보냅니다.)
+  - 프런트에서 백엔드로 http 통신으로 데이터를 전달할 때는 (1) url을 통한 데이터 전달, (2) HTTP body를 통한 데이터 전달이 있음
+  - (1) Url을 통해 데이터를 전달 받을 때는 @PathVariable을 통해서 데이터를 받을 수 있음
+  - (2) Http Body 데이터는 JSON, xml 등 다양한 형태로 오는데 JSON을 객체로 받으려면 @RequestBody를 사용
 3. RESTful한 API를 설계했나요? 어떤 부분이 그런가요? 어떤 부분이 그렇지 않나요?
-  -> controller/service/repository로 레이어 분리를 해주었습니다.
-  -> 메소드를 적절하게 사용했습니다. (등록 : POST, 수정 : PUT, 삭제 : DELETE)
-  -> 모든 URI에 api가 들어가기 때문에 Mapping을 추가로 해줄 수 있을 것 같습니다. 이 부분은 추가로 수정해 push하겠습니다.
+  - RESTFul한 API: 자원 (URI), 행위 (HTTP Method), 표현을 잘 표현해서 설계한 API 
+  - controller/service/repository로 레이어 분리함 
+  - 적절한 메소드 사용 (등록 : POST, 수정 : PUT, 삭제 : DELETE) 
+  - URI에 대한 표현은 예시와 동일하게 구성하여서 잘 표현이 안됨
   
 4. 적절한 관심사 분리를 적용하였나요? (Controller, Repository, Service)
-  -> 네. 분리해서 설계했습니다.
-  
+  -  Controller, Repository, Service를 잘 분리함
 5. API 명세서 작성 가이드라인을 검색하여 직접 작성한 API 명세서와 비교해보세요!
-  -> API 명세서를 보다 자세하게 작성할 수 있네요. Request에 Syntax만이 아니라 header, eliments도 들어갈 수 있고,
-     Response에도 Syntax, Elements 도 들어갈 수 있고요. 보다 상세하게 작성하는 연습을 해야겠습니다!
-     
+  - Request와 Response에 header, eliments도 들어갈 수 있음
