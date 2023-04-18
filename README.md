@@ -28,3 +28,20 @@
 ## API 명세서
 ![image](https://user-images.githubusercontent.com/97998858/232209293-27dd7f32-4398-4a4b-8fc9-a8b75e6ea07f.png)
 
+## Why?
+1. 수정, 삭제 API의 request를 어떤 방식으로 사용하셨나요? (param, query, body)
+  - 수정, 삭제 기능은 pk인 id를 기반으로 Repo 메소드를 사용하였고, id값은 @PathVariable을 통해서 받고, 프런트에서 온 HTTP body 데이터(JSON)는 @RequestBody를 사용하여 객체로 받음 
+2. 어떤 상황에 어떤 방식의 request를 써야하나요?
+  - 프런트에서 백엔드로 http 통신으로 데이터를 전달할 때는 (1) url을 통한 데이터 전달, (2) HTTP body를 통한 데이터 전달이 있음
+  - (1) Url을 통해 데이터를 전달 받을 때는 @PathVariable을 통해서 데이터를 받을 수 있음
+  - (2) Http Body 데이터는 JSON, xml 등 다양한 형태로 오는데 JSON을 객체로 받으려면 @RequestBody를 사용
+3. RESTful한 API를 설계했나요? 어떤 부분이 그런가요? 어떤 부분이 그렇지 않나요?
+  - RESTFul한 API: 자원 (URI), 행위 (HTTP Method), 표현을 잘 표현해서 설계한 API 
+  - controller/service/repository로 레이어 분리함 
+  - 적절한 메소드 사용 (등록 : POST, 수정 : PUT, 삭제 : DELETE) 
+  - URI에 대한 표현은 예시와 동일하게 구성하여서 잘 표현이 안됨
+  
+4. 적절한 관심사 분리를 적용하였나요? (Controller, Repository, Service)
+  -  Controller, Repository, Service를 잘 분리함
+5. API 명세서 작성 가이드라인을 검색하여 직접 작성한 API 명세서와 비교해보세요!
+  - Request와 Response에 header, eliments도 들어갈 수 있음
