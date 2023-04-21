@@ -6,11 +6,16 @@ import com.sparta.hanghaememo.dto.MemoResponseDto;
 import com.sparta.hanghaememo.dto.MemoRequestDto;
 
 import com.sparta.hanghaememo.entity.Memo;
+import com.sparta.hanghaememo.member.entity.User;
+import com.sparta.hanghaememo.member.jwt.JwtUtil;
+import com.sparta.hanghaememo.member.repository.UserRepository;
 import com.sparta.hanghaememo.repository.MemoRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +26,18 @@ import java.util.Map;
 public class MemoService {
 
     private final MemoRepository memoRepository; // service와 db를 연결
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+
 
     @Transactional//
-    public MemoResponseDto createMemo(MemoRequestDto requestDto) {
+    public MemoResponseDto createMemo(MemoRequestDto requestDto, HttpServletRequest request) {
+        // jwt 토큰 확인
+        User user = checkJwtToken(request);
         Memo memo = new Memo(requestDto); // 메모 클래스를 인스턴스로 만들어서 사용하려면 Memo 부분에 생성자를 추가해줘야함
-        memoRepository.save(memo);
+        memo.setUsername(user.getUsername());
+        memoRepository.saveAndFlush(memo);
+        //memoRepository.save(memo);
         return new MemoResponseDto(memo);
     }
 
@@ -76,5 +88,29 @@ public class MemoService {
         else {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+    }
+
+    public User checkJwtToken(HttpServletRequest request) {
+        // Request에서 Token 가져오기
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        // 토큰이 있는 경우에만 게시글 접근 가능
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+            return user;
+
+        }
+        return null;
     }
 }

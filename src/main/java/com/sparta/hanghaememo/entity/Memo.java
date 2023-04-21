@@ -3,9 +3,11 @@ package com.sparta.hanghaememo.entity;
 import com.sparta.hanghaememo.dto.MemoRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는 부분
@@ -14,7 +16,7 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
     private Long id;
 
     @Column(nullable = false)
-    private String author;
+    private String username;
 
     @Column(nullable = false)
     private String content;
@@ -33,14 +35,14 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
     public Memo(MemoRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.author = requestDto.getAuthor();
+        this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
     }
 
 
 
     public void update(MemoRequestDto memoRequestDto) {
-        this.author = memoRequestDto.getAuthor();
+        this.username = memoRequestDto.getUsername();
         this.content = memoRequestDto.getContent();
     }
 

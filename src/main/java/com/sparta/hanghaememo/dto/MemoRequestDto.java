@@ -11,6 +11,6 @@ public class MemoRequestDto {//클라이언트에서 넘어오는 데이터를 M
     //아래 필드들은 프런트에서 데이터를 받아오는 변수들의 이름으로 구성해야함
     private String title;
     private String content;
-    private String author;
+    private String username;
     private String password;
 }

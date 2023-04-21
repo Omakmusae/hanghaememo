@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-
+    @ResponseBody
     @PostMapping("/signup")//회원가입
     public String signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
@@ -30,8 +30,8 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto loginRequestDto) {
-        userService.login(loginRequestDto);
+    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        userService.login(loginRequestDto, response);
         return "로그인 성공";
     }
 

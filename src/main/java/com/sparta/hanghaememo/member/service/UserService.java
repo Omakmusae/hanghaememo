@@ -5,6 +5,7 @@ import com.sparta.hanghaememo.member.dto.LoginRequestDto;
 import com.sparta.hanghaememo.member.dto.SignupRequestDto;
 import com.sparta.hanghaememo.member.entity.User;
 import com.sparta.hanghaememo.member.entity.UserRoleEnum;
+import com.sparta.hanghaememo.member.jwt.JwtUtil;
 import com.sparta.hanghaememo.member.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void signup(SignupRequestDto signupRequestDto) {
@@ -45,7 +47,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public void login(LoginRequestDto loginRequestDto) {
+    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -58,5 +60,6 @@ public class UserService {
         if(!user.getPassword().equals(password)){
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
     }
 }

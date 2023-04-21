@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,8 @@ public class MemoController {
 
     //CRUD
     @PostMapping("/post") // post 방식은 body에 넣어서 데이터를 전송해야함
-    public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto) {
-        return memoService.createMemo(requestDto);
+    public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
+        return memoService.createMemo(requestDto, request);
     }
 
     @GetMapping("/posts") // 전체 메모 조회
