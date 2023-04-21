@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Service
@@ -23,7 +24,6 @@ public class UserService {
     public void signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
-        String email = signupRequestDto.getEmail();
 
         // 회원 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
@@ -40,7 +40,7 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(username, password, email, role);
+        User user = new User(username, password, role);
         userRepository.save(user);
     }
 

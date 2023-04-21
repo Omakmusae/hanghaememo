@@ -31,7 +31,6 @@ public class MemoService {
 
     @Transactional(readOnly = true)//읽기 옵션 추가
     public List<MemoResponseDto> getMemos() {
-
         List<Memo> list = memoRepository.findAllByOrderByCreatedAtDesc();
         List<MemoResponseDto> response = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
