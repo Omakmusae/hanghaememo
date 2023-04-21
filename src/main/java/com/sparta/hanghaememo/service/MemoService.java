@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,13 +44,7 @@ public class MemoService {
 
     @Transactional(readOnly = true)//읽기 옵션 추가
     public List<MemoResponseDto> getMemos() {
-        List<Memo> list = memoRepository.findAllByOrderByCreatedAtDesc();
-        List<MemoResponseDto> response = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            MemoResponseDto memoResponseDto = new MemoResponseDto(list.get(i));
-            response.add(memoResponseDto);
-        }
-        return response;
+        return memoRepository.findAllByOrderByCreatedAtDesc().stream().map(MemoResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)//읽기 옵션 추가
