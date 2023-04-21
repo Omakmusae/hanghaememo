@@ -49,9 +49,10 @@ public class MemoService {
 
     @Transactional(readOnly = true)//읽기 옵션 추가
     public MemoResponseDto selectMemo(Long id) {
-        Memo memo = memoRepository.findById(id).get();
-        MemoResponseDto memoResponseDto = new MemoResponseDto(memo);
-        return memoResponseDto;
+        Memo memo = memoRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다.")
+        );
+        return new MemoResponseDto(memo);
     }
 
 
