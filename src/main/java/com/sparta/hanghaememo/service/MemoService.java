@@ -1,12 +1,13 @@
 package com.sparta.hanghaememo.service;
 
-import com.sparta.hanghaememo.dto.DeleteRequestDto;
 import com.sparta.hanghaememo.dto.MemoModifyDto;
 import com.sparta.hanghaememo.dto.MemoResponseDto;
 import com.sparta.hanghaememo.dto.MemoRequestDto;
 
+import com.sparta.hanghaememo.dto.ModifyRequestDto;
 import com.sparta.hanghaememo.entity.Memo;
 import com.sparta.hanghaememo.member.entity.User;
+import com.sparta.hanghaememo.member.entity.UserRoleEnum;
 import com.sparta.hanghaememo.member.jwt.JwtUtil;
 import com.sparta.hanghaememo.member.repository.UserRepository;
 import com.sparta.hanghaememo.repository.MemoRepository;
@@ -32,11 +33,12 @@ public class MemoService {
 
 
     @Transactional//
-    public MemoResponseDto createMemo(MemoRequestDto requestDto, HttpServletRequest request) {
+    public MemoResponseDto createMemo(ModifyRequestDto modifyRequestDto, HttpServletRequest request) {
         // jwt 토큰 확인
         User user = checkJwtToken(request);
-        Memo memo = new Memo(requestDto); // 메모 클래스를 인스턴스로 만들어서 사용하려면 Memo 부분에 생성자를 추가해줘야함
-        memo.setUsername(user.getUsername());
+        Memo memo = new Memo(modifyRequestDto, user); // 메모 클래스를 인스턴스로 만들어서 사용하려면 Memo 부분에 생성자를 추가해줘야함
+
+        //memo.setUsername(user.getUsername());
         memoRepository.saveAndFlush(memo);
         //memoRepository.save(memo);
         return new MemoResponseDto(memo);
@@ -57,32 +59,38 @@ public class MemoService {
 
 
     @Transactional
-    public MemoModifyDto update(Long id, MemoRequestDto memoRequestDto) {
+    public MemoModifyDto update(Long id, ModifyRequestDto modifyRequestDto, HttpServletRequest request) {
+        // 토큰 체크
+        User user = checkJwtToken(request);
+
         Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다.")
         );
-        if(memo.getPassword().equals(memoRequestDto.getPassword())) {
-            memo.update(memoRequestDto);
-        }
-        else {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
+        memo.update(modifyRequestDto);
         return new MemoModifyDto(memo);
     }
 
     @Transactional
-    public String deleteMemo(Long id, DeleteRequestDto requestDto) {
+    public String deleteMemo(Long id, HttpServletRequest request) {
+        // 토큰 체크
+        User user = checkJwtToken(request);
+
         Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다.")
         );
-        if(memo.getPassword().equals(requestDto.getPassword())) {
+
+        UserRoleEnum userRoleEnum = user.getRole();
+        System.out.println("클라이언트 role 확인 = " + userRoleEnum);
+
+        if(userRoleEnum == UserRoleEnum.ADMIN) {
             memoRepository.delete(memo);
-//            Map<String, Boolean> response = new HashMap<>();
-//            response.put("success", true);
             return "게시글을 삭제했습니다.";
-        }
-        else {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        } else {
+            if(memo.getUsername() != user.getUsername()) {
+                throw new IllegalArgumentException("다른 사람의 게시글은 삭제 할 수 없습니다.");
+            }
+            memoRepository.delete(memo);
+            return "게시글을 삭제했습니다.";
         }
     }
 

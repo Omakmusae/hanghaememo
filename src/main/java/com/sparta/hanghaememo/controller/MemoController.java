@@ -1,11 +1,10 @@
 package com.sparta.hanghaememo.controller;
 
-
-import com.sparta.hanghaememo.dto.DeleteRequestDto;
 import com.sparta.hanghaememo.dto.MemoModifyDto;
 import com.sparta.hanghaememo.dto.MemoResponseDto;
 import com.sparta.hanghaememo.dto.MemoRequestDto;
 
+import com.sparta.hanghaememo.dto.ModifyRequestDto;
 import com.sparta.hanghaememo.service.MemoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +27,8 @@ public class MemoController {
 
     //CRUD
     @PostMapping("/post") // post 방식은 body에 넣어서 데이터를 전송해야함
-    public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
-        return memoService.createMemo(requestDto, request);
+    public MemoResponseDto createMemo(@RequestBody ModifyRequestDto modifyRequestDto, HttpServletRequest request) {
+        return memoService.createMemo(modifyRequestDto, request);
     }
 
     @GetMapping("/posts") // 전체 메모 조회
@@ -42,17 +41,15 @@ public class MemoController {
         return memoService.selectMemo(id);
     }
 
-
-
     @PutMapping("/post/{id}")
-    public MemoModifyDto updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto) throws Exception{
+    public MemoModifyDto updateMemo(@PathVariable Long id, @RequestBody ModifyRequestDto modifyRequestDto, HttpServletRequest request) throws Exception{
         System.out.println("수정");
-        return memoService.update(id, memoRequestDto);
+        return memoService.update(id, modifyRequestDto, request);
     }
 
     @DeleteMapping("/post/{id}")
-    public String deleteMemo(@PathVariable Long id, @RequestBody DeleteRequestDto requestDto) throws Exception{
-        return memoService.deleteMemo(id, requestDto);
+    public String deleteMemo(@PathVariable Long id, HttpServletRequest request) throws Exception{
+        return memoService.deleteMemo(id, request);
     }
 
 

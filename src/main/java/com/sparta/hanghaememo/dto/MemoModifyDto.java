@@ -17,4 +17,5 @@ public class MemoModifyDto {
         this.username = memo.getUsername();
         this.modifiedAt = memo.getModifiedAt();
     }
+
 }

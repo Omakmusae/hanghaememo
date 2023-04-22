@@ -1,6 +1,8 @@
 package com.sparta.hanghaememo.entity;
 
 import com.sparta.hanghaememo.dto.MemoRequestDto;
+import com.sparta.hanghaememo.dto.ModifyRequestDto;
+import com.sparta.hanghaememo.member.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,11 +41,17 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
         this.password = requestDto.getPassword();
     }
 
+    public Memo(ModifyRequestDto modifyRequestDto, User user) {
+        this.title = modifyRequestDto.getTitle();
+        this.content = modifyRequestDto.getContent();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+    }
 
 
-    public void update(MemoRequestDto memoRequestDto) {
-        this.username = memoRequestDto.getUsername();
-        this.content = memoRequestDto.getContent();
+    public void update(ModifyRequestDto modifyRequestDto) {
+        this.title = modifyRequestDto.getTitle();
+        this.content = modifyRequestDto.getContent();
     }
 
 
