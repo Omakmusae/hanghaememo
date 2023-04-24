@@ -4,7 +4,6 @@ package com.sparta.hanghaememo.member.controller;
 import com.sparta.hanghaememo.member.dto.LoginRequestDto;
 import com.sparta.hanghaememo.member.dto.SignupRequestDto;
 import com.sparta.hanghaememo.member.service.UserService;
-import com.sparta.hanghaememo.message.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,15 +23,16 @@ public class UserController {
     private final UserService userService;
     @ResponseBody
     @PostMapping("/signup")//회원가입
-    public Message signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
-        return userService.signup(signupRequestDto);
-
+    public String signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
+        userService.signup(signupRequestDto);
+        return "회원 가입 성공";
     }
 
     @ResponseBody
     @PostMapping("/login")
-    public Message login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        return userService.login(loginRequestDto, response);
-
+    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        userService.login(loginRequestDto, response);
+        return "로그인 성공";
     }
+
 }

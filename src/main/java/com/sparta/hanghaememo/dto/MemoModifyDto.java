@@ -14,7 +14,7 @@ public class MemoModifyDto {
     public MemoModifyDto(Memo memo) {
         this.title = memo.getTitle();
         this.content = memo.getContent();
-        this.username = memo.getUser().getUsername();
+        this.username = memo.getUsername();
         this.modifiedAt = memo.getModifiedAt();
     }
 
