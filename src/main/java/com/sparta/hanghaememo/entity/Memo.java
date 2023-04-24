@@ -6,8 +6,12 @@ import com.sparta.hanghaememo.member.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -15,10 +19,8 @@ import javax.persistence.*;
 public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는 부분
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "memo_id")
     private Long id;
-
-    @Column(nullable = false)
-    private String username;
 
     @Column(nullable = false)
     private String content;
@@ -26,26 +28,30 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // 일대다 관계 설정
+    @OneToMany(mappedBy = "memo")
+    @OrderBy("createdAt desc")//댓글은 작성 날짜 기준 내림차순 정렬
+    private List<Comment> commentList = new ArrayList<>();
 
 //    public Memo(String username, String contents) {
 //        this.username = username;
 //        this.contents = contents;
 //    }
 
-    public Memo(MemoRequestDto requestDto) {
+    public Memo(MemoRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+        this.user = user;
     }
 
     public Memo(ModifyRequestDto modifyRequestDto, User user) {
         this.title = modifyRequestDto.getTitle();
         this.content = modifyRequestDto.getContent();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
+        this.user = user;
     }
 
 

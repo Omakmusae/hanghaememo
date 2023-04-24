@@ -37,20 +37,20 @@ public class MemoController {
         return memoService.getMemos();
     }
 
-    @GetMapping("/post/{id}") // 선택 메모 조회
-    public MemoResponseDto selectMemo(@PathVariable Long id) {
-        return memoService.selectMemo(id);
+    @GetMapping("/post/{memo_id}") // 선택 메모 조회
+    public MemoResponseDto selectMemo(@PathVariable Long memo_id) {
+        return memoService.selectMemo(memo_id);
     }
 
-    @PutMapping("/post/{id}")
-    public MemoModifyDto updateMemo(@PathVariable Long id, @RequestBody ModifyRequestDto modifyRequestDto, HttpServletRequest request) throws Exception{
+    @PutMapping("/post/{memo_id}")
+    public MemoModifyDto updateMemo(@PathVariable Long memo_id, @RequestBody ModifyRequestDto modifyRequestDto, HttpServletRequest request) throws Exception{
         System.out.println("수정");
-        return memoService.update(id, modifyRequestDto, request);
+        return memoService.update(memo_id, modifyRequestDto, request);
     }
 
-    @DeleteMapping("/post/{id}")
-    public String deleteMemo(@PathVariable Long id, HttpServletRequest request) throws Exception{
-        return memoService.deleteMemo(id, request);
+    @DeleteMapping("/post/{memo_id}")
+    public String deleteMemo(@PathVariable Long memo_id, HttpServletRequest request) throws Exception{
+        return memoService.deleteMemo(memo_id, request);
     }
 
 
