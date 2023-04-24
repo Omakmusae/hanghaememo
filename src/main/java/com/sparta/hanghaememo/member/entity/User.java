@@ -1,10 +1,13 @@
 package com.sparta.hanghaememo.member.entity;
 
 
+import com.sparta.hanghaememo.entity.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -13,6 +16,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     // nullable: null 허용 여부
@@ -26,6 +30,10 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+//    // Comment와 일대다 관계 설정
+//    @OneToMany
+//    private List<Comment> commentList = new ArrayList<>();
 
     public User(String username, String password, UserRoleEnum role) {
         this.username = username;

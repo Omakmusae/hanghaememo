@@ -7,6 +7,7 @@ import com.sparta.hanghaememo.member.entity.User;
 import com.sparta.hanghaememo.member.entity.UserRoleEnum;
 import com.sparta.hanghaememo.member.jwt.JwtUtil;
 import com.sparta.hanghaememo.member.repository.UserRepository;
+import com.sparta.hanghaememo.message.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public void signup(SignupRequestDto signupRequestDto) {
+    public Message signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
 
@@ -44,10 +45,11 @@ public class UserService {
 
         User user = new User(username, password, role);
         userRepository.save(user);
+        return new Message("회원가입 성공", 200);
     }
 
     @Transactional(readOnly = true)
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public Message login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -61,5 +63,7 @@ public class UserService {
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+
+        return new Message("로그인 성공", 200);
     }
 }

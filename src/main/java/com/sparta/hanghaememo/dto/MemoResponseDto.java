@@ -3,6 +3,7 @@ import com.sparta.hanghaememo.entity.Memo;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class MemoResponseDto {
@@ -12,13 +13,16 @@ public class MemoResponseDto {
     private String username;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private List<CommentResponseDto> commentList;
 
-    public MemoResponseDto(Memo memo) {
+    public MemoResponseDto(Memo memo, List<CommentResponseDto> commentList) {
         this.id = memo.getId();
         this.title = memo.getTitle();
         this.content = memo.getContent();
-        this.username = memo.getUsername();
+        this.username = memo.getUser().getUsername();
         this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();
+        this.commentList = commentList;
     }
+
 }
