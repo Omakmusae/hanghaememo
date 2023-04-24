@@ -7,6 +7,7 @@ import com.sparta.hanghaememo.dto.MemoRequestDto;
 import com.sparta.hanghaememo.dto.ModifyRequestDto;
 import com.sparta.hanghaememo.service.MemoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -32,7 +33,7 @@ public class MemoController {
     }
 
     @GetMapping("/posts") // 전체 메모 조회
-    public List<MemoResponseDto> Memos() {
+    public ResponseEntity<Map<String, List<MemoResponseDto>>> Memos() {
         return memoService.getMemos();
     }
 

@@ -13,6 +13,7 @@ import com.sparta.hanghaememo.member.repository.UserRepository;
 import com.sparta.hanghaememo.repository.MemoRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +44,14 @@ public class MemoService {
         //memoRepository.save(memo);
         return new MemoResponseDto(memo);
     }
+    //List<MemoResponseDto>
 
     @Transactional(readOnly = true)//읽기 옵션 추가
-    public List<MemoResponseDto> getMemos() {
-        return memoRepository.findAllByOrderByCreatedAtDesc().stream().map(MemoResponseDto::new).collect(Collectors.toList());
+    public ResponseEntity<Map<String, List<MemoResponseDto>>> getMemos() {
+        List<MemoResponseDto> memoDtoList = memoRepository.findAllByOrderByCreatedAtDesc().stream().map(MemoResponseDto::new).collect(Collectors.toList());
+        Map<String, List<MemoResponseDto>> result = new HashMap<>();
+        result.put("postList", memoDtoList);
+        return ResponseEntity.ok().body(result);
     }
 
     @Transactional(readOnly = true)//읽기 옵션 추가
