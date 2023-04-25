@@ -1,6 +1,7 @@
 # hanghaeblog 
 > Spring Boot로 로그인 기능이 없는 나만의 항해 블로그 백엔드 서버 만들기
 
+<details><summary>level 2 내용</summary>
 ## 요구사항
 1. 아래의 요구사항을 기반으로 Use Case 그려보기
 2. 전체 게시글 목록 조회 API
