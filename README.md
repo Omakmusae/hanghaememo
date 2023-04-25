@@ -2,6 +2,7 @@
 > Spring Boot로 로그인 기능이 없는 나만의 항해 블로그 백엔드 서버 만들기
 
 <details><summary>level 2 내용</summary>
+  
 ## 요구사항
 1. 아래의 요구사항을 기반으로 Use Case 그려보기
 2. 전체 게시글 목록 조회 API
@@ -54,6 +55,7 @@
 </details>
 
 <details><summary>level 3 내용</summary>
+  
 ### ERD
   ![image](https://user-images.githubusercontent.com/106947027/234207313-fe01b5c4-3a2d-47a9-8eed-77fa6dc232f2.png)
 
