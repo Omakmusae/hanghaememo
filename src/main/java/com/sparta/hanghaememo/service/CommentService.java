@@ -54,6 +54,8 @@ public class CommentService {
             comment = commentRepository.findById(memo_id).orElseThrow(
                     () -> new CustomException(COMMENT_NOT_FOUND)
             );
+            comment.update(commentRequestDto, user);
+            return new CommentResponseDto(comment);
         } else {
             // 작성자 일치 여부 확인
             comment = commentRepository.findByIdAndUser_username(memo_id, user.getUsername()).orElseThrow(

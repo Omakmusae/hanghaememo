@@ -1,5 +1,6 @@
 package com.sparta.hanghaememo.service;
 
+import com.sparta.hanghaememo.Exception.CustomException;
 import com.sparta.hanghaememo.dto.*;
 
 import com.sparta.hanghaememo.entity.Comment;
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+
+import static com.sparta.hanghaememo.Exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +66,7 @@ public class MemoService {
     @Transactional(readOnly = true)//읽기 옵션 추가
     public MemoResponseDto selectMemo(Long id) {
         Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다.")
+                () -> new CustomException(POST_NOT_FOUND)
         );
         return new MemoResponseDto(memo, getCommentList(id));
     }
@@ -73,10 +76,22 @@ public class MemoService {
     public MemoModifyDto update(Long id, ModifyRequestDto modifyRequestDto, HttpServletRequest request) {
         // 토큰 체크
         User user = checkJwtToken(request);
+        Memo memo;
+        UserRoleEnum userRoleEnum = user.getRole();
+        // 권한 확인 후, 관리자가 아니면 작성자인지 확인
+        if(userRoleEnum == UserRoleEnum.ADMIN) {
+            memo = memoRepository.findById(id).orElseThrow(
+                    () -> new CustomException(CANNOT_FOUND_USERNAME)
+            );
+            memo.update(modifyRequestDto);
+            return new MemoModifyDto(memo);
+        } else {
+            // 작성자 일치 여부 확인
+            memo = memoRepository.findByIdAndUser_username(id, user.getUsername()).orElseThrow(
+                    () -> new CustomException(AUTHOR_NOT_SAME_MOD)
+            );
+        }
 
-        Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다.")
-        );
         memo.update(modifyRequestDto);
         return new MemoModifyDto(memo);
     }
@@ -87,7 +102,7 @@ public class MemoService {
         User user = checkJwtToken(request);
 
         Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다.")
+                () -> new CustomException(POST_NOT_FOUND)
         );
 
         UserRoleEnum userRoleEnum = user.getRole();
@@ -98,7 +113,7 @@ public class MemoService {
             return "게시글을 삭제했습니다.";
         } else {
             if(memo.getUser().getUsername() != user.getUsername()) {
-                throw new IllegalArgumentException("다른 사람의 게시글은 삭제 할 수 없습니다.");
+                throw new CustomException(AUTHOR_NOT_SAME_DEL);
             }
             memoRepository.delete(memo);
             return "게시글을 삭제했습니다.";
@@ -121,7 +136,7 @@ public class MemoService {
 
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+                    () -> new CustomException(CANNOT_FOUND_USER)
             );
             return user;
 
