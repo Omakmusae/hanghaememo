@@ -13,9 +13,11 @@ import com.sparta.hanghaememo.repository.CommentRepository;
 import com.sparta.hanghaememo.repository.MemoRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -57,7 +59,6 @@ public class MemoService {
         for(Memo memo : memos) {
             memoDtoList.add(new MemoResponseDto(memo, getCommentList(memo.getId())));
         }
-
         Map<String, List<MemoResponseDto>> result = new HashMap<>();
         result.put("postList", memoDtoList);
         return ResponseEntity.ok().body(result);
@@ -81,14 +82,14 @@ public class MemoService {
         // 권한 확인 후, 관리자가 아니면 작성자인지 확인
         if(userRoleEnum == UserRoleEnum.ADMIN) {
             memo = memoRepository.findById(id).orElseThrow(
-                    () -> new CustomException(CANNOT_FOUND_USERNAME)
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다.")
             );
             memo.update(modifyRequestDto);
             return new MemoModifyDto(memo);
         } else {
             // 작성자 일치 여부 확인
             memo = memoRepository.findByIdAndUser_username(id, user.getUsername()).orElseThrow(
-                    () -> new CustomException(AUTHOR_NOT_SAME_MOD)
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다")
             );
         }
 
@@ -113,7 +114,7 @@ public class MemoService {
             return "게시글을 삭제했습니다.";
         } else {
             if(memo.getUser().getUsername() != user.getUsername()) {
-                throw new CustomException(AUTHOR_NOT_SAME_DEL);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다");
             }
             memoRepository.delete(memo);
             return "게시글을 삭제했습니다.";
@@ -131,7 +132,8 @@ public class MemoService {
                 // 토큰에서 사용자 정보 가져오기
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
-                throw new IllegalArgumentException("Token Error");
+                //throw new IllegalArgumentException("Token Error");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다.");
             }
 
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회

@@ -14,8 +14,10 @@ import com.sparta.hanghaememo.repository.CommentRepository;
 import com.sparta.hanghaememo.repository.MemoRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -83,7 +85,7 @@ public class CommentService {
         } else {
             // 작성자 일치 여부 확인
             comment = commentRepository.findByIdAndUser_username(memo_id, user.getUsername()).orElseThrow(
-                    () -> new CustomException(AUTHOR_NOT_SAME_DEL)
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다")
             );
         }
         commentRepository.deleteById(memo_id);
@@ -103,7 +105,7 @@ public class CommentService {
                 // 토큰에서 사용자 정보 가져오기
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
-                throw new CustomException(INVALIDATED_TOKEN);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다.");
             }
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
