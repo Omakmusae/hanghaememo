@@ -32,9 +32,8 @@ public class CommentService {
     private final JwtUtil jwtUtil;
     // 댓글 작성
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto commentRequestDto, HttpServletRequest request) {
-        // 클라이언트의 토큰 체크
-        User user = checkJwtToken(request);
+    public CommentResponseDto createComment(CommentRequestDto commentRequestDto, User user) {
+
         // 게시글 DB 저장 유무 확인
         Memo memo = memoRepository.findById(commentRequestDto.getMemo_id()).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
@@ -45,9 +44,7 @@ public class CommentService {
     }
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long memo_id, CommentRequestDto commentRequestDto, HttpServletRequest request) {
-        // 클라이언트의 토큰 체크
-        User user = checkJwtToken(request);
+    public CommentResponseDto updateComment(Long memo_id, CommentRequestDto commentRequestDto, User user) {
 
         Comment comment;
         UserRoleEnum userRoleEnum = user.getRole();
@@ -70,9 +67,8 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public Message deleteComment(Long memo_id, HttpServletRequest request) {
-        // 토큰 체크
-        User user = checkJwtToken(request);
+    public Message deleteComment(Long memo_id, User user) {
+
 
         UserRoleEnum userRoleEnum = user.getRole();
         Comment comment;
@@ -94,26 +90,26 @@ public class CommentService {
 
 
 
-
-    public User checkJwtToken(HttpServletRequest request) {
-        // Request에서 Token 가져오기
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        // 토큰이 있는 경우에만 게시글 접근 가능
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다.");
-            }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(CANNOT_FOUND_USERNAME)
-            );
-            return user;
-
-        }
-        return null;
-    }
+//
+//    public User checkJwtToken(HttpServletRequest request) {
+//        // Request에서 Token 가져오기
+//        String token = jwtUtil.resolveToken(request);
+//        Claims claims;
+//        // 토큰이 있는 경우에만 게시글 접근 가능
+//        if (token != null) {
+//            if (jwtUtil.validateToken(token)) {
+//                // 토큰에서 사용자 정보 가져오기
+//                claims = jwtUtil.getUserInfoFromToken(token);
+//            } else {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다.");
+//            }
+//            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+//            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+//                    () -> new CustomException(CANNOT_FOUND_USERNAME)
+//            );
+//            return user;
+//
+//        }
+//        return null;
+//    }
 }

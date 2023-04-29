@@ -1,6 +1,7 @@
 package com.sparta.hanghaememo.member.service;
 
 
+import com.sparta.hanghaememo.Exception.CustomException;
 import com.sparta.hanghaememo.member.dto.LoginRequestDto;
 import com.sparta.hanghaememo.member.dto.SignupRequestDto;
 import com.sparta.hanghaememo.member.entity.User;
@@ -9,11 +10,14 @@ import com.sparta.hanghaememo.member.jwt.JwtUtil;
 import com.sparta.hanghaememo.member.repository.UserRepository;
 import com.sparta.hanghaememo.message.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
+
+import static com.sparta.hanghaememo.Exception.ErrorCode.CANNOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +26,14 @@ public class UserService {
     private final UserRepository userRepository;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Message signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
-        String password = signupRequestDto.getPassword();
+        //String password = signupRequestDto.getPassword();
+        // 비밀번호 암호화 해서 저장
+        String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         // 회원 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
@@ -58,9 +65,14 @@ public class UserService {
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
 
-        // 비밀번호 확인
-        if(!user.getPassword().equals(password)){
-            throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+//        // 비밀번호 확인
+//        if(!user.getPassword().equals(password)){
+//            throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+//        }
+        // 비밀번호 확인. (사용자가 입력한 비밀번호, 저장된 비밀번호)
+        // 사용자가 입력한 비밀번호를 암호화해서 DB에 저장된 비밀번호와 비교하여 인증
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw  new CustomException(CANNOT_FOUND_USER);
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
 

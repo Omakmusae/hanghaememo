@@ -5,9 +5,11 @@ import com.sparta.hanghaememo.dto.MemoResponseDto;
 import com.sparta.hanghaememo.dto.MemoRequestDto;
 
 import com.sparta.hanghaememo.dto.ModifyRequestDto;
+import com.sparta.hanghaememo.security.UserDetailsImpl;
 import com.sparta.hanghaememo.service.MemoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,8 +30,8 @@ public class MemoController {
 
     //CRUD
     @PostMapping("/post") // post 방식은 body에 넣어서 데이터를 전송해야함
-    public MemoResponseDto createMemo(@RequestBody ModifyRequestDto modifyRequestDto, HttpServletRequest request) {
-        return memoService.createMemo(modifyRequestDto, request);
+    public MemoResponseDto createMemo(@RequestBody ModifyRequestDto modifyRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memoService.createMemo(modifyRequestDto, userDetails.getUser());
     }
 
     @GetMapping("/posts") // 전체 메모 조회
@@ -43,14 +45,14 @@ public class MemoController {
     }
 
     @PutMapping("/post/{memo_id}")
-    public MemoModifyDto updateMemo(@PathVariable Long memo_id, @RequestBody ModifyRequestDto modifyRequestDto, HttpServletRequest request) throws Exception{
+    public MemoModifyDto updateMemo(@PathVariable Long memo_id, @RequestBody ModifyRequestDto modifyRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception{
         System.out.println("수정");
-        return memoService.update(memo_id, modifyRequestDto, request);
+        return memoService.update(memo_id, modifyRequestDto, userDetails.getUser());
     }
 
     @DeleteMapping("/post/{memo_id}")
-    public String deleteMemo(@PathVariable Long memo_id, HttpServletRequest request) throws Exception{
-        return memoService.deleteMemo(memo_id, request);
+    public String deleteMemo(@PathVariable Long memo_id, @AuthenticationPrincipal UserDetailsImpl userDetails)  {
+        return memoService.deleteMemo(memo_id, userDetails.getUser());
     }
 
 

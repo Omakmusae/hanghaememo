@@ -6,10 +6,10 @@ import com.sparta.hanghaememo.member.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.core.annotation.Order;
+//import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -33,9 +33,9 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
     private User user;
 
     // 일대다 관계 설정
-    @OneToMany(mappedBy = "memo")
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.REMOVE) // cascade 설정은 외래키로 연결된 테이블의 데이터까지 삭제
     @OrderBy("createdAt desc")//댓글은 작성 날짜 기준 내림차순 정렬
-    private List<Comment> commentList = new ArrayList<>();
+    private List<Comment> commentList;
 
 //    public Memo(String username, String contents) {
 //        this.username = username;
@@ -59,8 +59,6 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
         this.title = modifyRequestDto.getTitle();
         this.content = modifyRequestDto.getContent();
     }
-
-
 
 }
 
