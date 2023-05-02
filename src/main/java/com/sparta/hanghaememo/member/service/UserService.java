@@ -1,6 +1,5 @@
 package com.sparta.hanghaememo.member.service;
 
-
 import com.sparta.hanghaememo.Exception.CustomException;
 import com.sparta.hanghaememo.member.dto.LoginRequestDto;
 import com.sparta.hanghaememo.member.dto.SignupRequestDto;

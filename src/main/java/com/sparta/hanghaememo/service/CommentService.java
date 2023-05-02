@@ -36,7 +36,7 @@ public class CommentService {
 
         // 게시글 DB 저장 유무 확인
         Memo memo = memoRepository.findById(commentRequestDto.getMemo_id()).orElseThrow(
-                () -> new CustomException(POST_NOT_FOUND)
+                () -> new CustomException(MEMO_NOT_FOUND)
         );
         //댓글 저장
         Comment comment = commentRepository.saveAndFlush(new Comment(commentRequestDto,memo, user));

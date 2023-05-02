@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 //import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,10 +33,16 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(nullable = false)
+    private int memoLike;
+
     // 일대다 관계 설정
     @OneToMany(mappedBy = "memo", cascade = CascadeType.REMOVE) // cascade 설정은 외래키로 연결된 테이블의 데이터까지 삭제
     @OrderBy("createdAt desc")//댓글은 작성 날짜 기준 내림차순 정렬
     private List<Comment> commentList;
+
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.REMOVE)
+    private List<Like> likeList = new ArrayList<>();
 
 //    public Memo(String username, String contents) {
 //        this.username = username;
@@ -45,6 +52,7 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
     public Memo(MemoRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
+        this.memoLike = 0;
         this.user = user;
     }
 
@@ -54,10 +62,18 @@ public class Memo extends Timestamped { //데이터를 받고 DB와 연결하는
         this.user = user;
     }
 
-
     public void update(ModifyRequestDto modifyRequestDto) {
         this.title = modifyRequestDto.getTitle();
         this.content = modifyRequestDto.getContent();
+        this.memoLike= modifyRequestDto.getMemoLike();
+    }
+
+    public void like() {
+        this.memoLike += 1;
+    }
+
+    public void unlike() {
+        this.memoLike -= 1;
     }
 
 }

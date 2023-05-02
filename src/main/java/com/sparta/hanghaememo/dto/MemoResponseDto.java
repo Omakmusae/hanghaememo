@@ -14,6 +14,8 @@ public class MemoResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<CommentResponseDto> commentList;
+    private int memoLike;
+
 
     public MemoResponseDto(Memo memo, List<CommentResponseDto> commentList) {
         this.id = memo.getId();
@@ -23,6 +25,7 @@ public class MemoResponseDto {
         this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();
         this.commentList = commentList;
+        this.memoLike=memo.getMemoLike();
     }
 
 }

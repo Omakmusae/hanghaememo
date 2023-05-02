@@ -67,7 +67,7 @@ public class MemoService {
     @Transactional(readOnly = true)//읽기 옵션 추가
     public MemoResponseDto selectMemo(Long id) {
         Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new CustomException(POST_NOT_FOUND)
+                () -> new CustomException(MEMO_NOT_FOUND)
         );
         return new MemoResponseDto(memo, getCommentList(id));
     }
@@ -102,7 +102,7 @@ public class MemoService {
         UserRoleEnum userRoleEnum = user.getRole();
 
         Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new CustomException(POST_NOT_FOUND)
+                () -> new CustomException(MEMO_NOT_FOUND)
         );
 
         System.out.println("클라이언트 role 확인 = " + userRoleEnum);

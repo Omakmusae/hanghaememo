@@ -10,7 +10,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    POST_NOT_FOUND(BAD_REQUEST, "게시글이 존재하지 않습니다."),
+    MEMO_NOT_FOUND(BAD_REQUEST, "게시글이 존재하지 않습니다."),
     COMMENT_NOT_FOUND(BAD_REQUEST, "해당 댓글이 존재하지 않습니다."),
     CANNOT_FOUND_USERNAME(BAD_REQUEST, "사용자가 존재하지 않습니다."),
 
